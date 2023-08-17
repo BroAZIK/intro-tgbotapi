@@ -36,7 +36,8 @@ def sendMessage(chat_id: str, text: str) -> None:
 
     payload = {
         'chat_id': chat_id,
-        'text': text
+        'text': text,
+        'parse_mode': "MarkdownV2"
     }
 
     response = requests.get(url=url, params=payload)
@@ -60,7 +61,7 @@ def echo():
             chat_id = last_update['message']['chat']['id']
             text = last_update['message']['text']
 
-            sendMessage(chat_id, text)
+            sendMessage(chat_id, f"||_*{text}*_||")
             print(f"send msg to {chat_id} ({text})")
 
             update_id = updates[-1]['update_id']
