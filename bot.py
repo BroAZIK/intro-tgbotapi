@@ -45,14 +45,14 @@ def sendMessage(chat_id: str, text: str) -> None:
 
 
 def echo():
-    updates_count = 0
+    update_id = 0
 
     while True:
         time.sleep(0.5)
 
-        print(f'updates: {updates_count}')
+        print(f'updates: {update_id}')
         updates = getUpdates()
-        if len(updates) == updates_count:
+        if updates[-1]['update_id'] == update_id:
             continue
         else:
             last_update = updates[-1]
@@ -63,7 +63,7 @@ def echo():
             sendMessage(chat_id, text)
             print(f"send msg to {chat_id} ({text})")
 
-            updates_count = len(updates)
+            update_id = updates[-1]['update_id']
 
 
 echo()
