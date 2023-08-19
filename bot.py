@@ -62,6 +62,20 @@ def sendPhoto(chat_id: str, file_id: str) -> None:
     return response.status_code
 
 
+def send_keyboard(chat_id, text, keyboard):
+    '''sending messages'''
+    url = f"{BASE_URL}{TOKEN}/sendMessage"
+
+    payload = {
+        'chat_id': chat_id,
+        'text': text,
+        'reply_markup': keyboard
+    }
+
+    response = requests.get(url=url, json=payload)
+
+    return response.status_code
+
 def echo():
     update_id = 0
 
@@ -83,7 +97,17 @@ def echo():
 
             if 'text' in message.keys():
                 text = message['text']
-                sendMessage(chat_id, text)
+                if text == '/start':
+                    text = "Hello, I am a bot."
+                    keyboard = {
+                        'keyboard': [
+                            ['Home', 'About'],
+                            ['Contact', 'Location']
+                        ],
+                    }
+                    send_keyboard(chat_id, text, keyboard)
+                else:
+                    sendMessage(chat_id, text)
             
             elif 'photo' in message.keys():
                 file_id = message['photo'][-1]['file_id']
