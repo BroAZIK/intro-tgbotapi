@@ -1,5 +1,6 @@
 import requests
 import time
+from pprint import pprint
 
 
 BASE_URL = 'https://api.telegram.org/bot'
@@ -36,8 +37,24 @@ def sendMessage(chat_id: str, text: str) -> None:
 
     payload = {
         'chat_id': chat_id,
-        'text': text,
+        'text': f"*{text}*",
         'parse_mode': "MarkdownV2"
+    }
+
+    response = requests.get(url=url, params=payload)
+
+    return response.status_code
+
+
+def sendPhoto(chat_id: str, file_id: str) -> None:
+    '''sending messages'''
+    url = f"{BASE_URL}{TOKEN}/sendPhoto"
+
+    payload = {
+        'chat_id': chat_id,
+        'photo': file_id,
+        'parse_mode': "HTML",
+        'caption': "<b>This is a photo you have sent.</b>"
     }
 
     response = requests.get(url=url, params=payload)
@@ -51,20 +68,27 @@ def echo():
     while True:
         time.sleep(0.5)
 
-        print(f'updates: {update_id}')
+        # print(f'updates: {update_id}')
         updates = getUpdates()
         if updates[-1]['update_id'] == update_id:
             continue
         else:
             last_update = updates[-1]
             
-            chat_id = last_update['message']['chat']['id']
-            text = last_update['message']['text']
+            message = last_update['message']
+            # pprint(message)
+            print("-"*50)
 
-            sendMessage(chat_id, f"||_*{text}*_||")
-            print(f"send msg to {chat_id} ({text})")
+            chat_id = message['chat']['id']
+
+            if 'text' in message.keys():
+                text = message['text']
+                sendMessage(chat_id, text)
+            
+            elif 'photo' in message.keys():
+                file_id = message['photo'][-1]['file_id']
+                sendPhoto(chat_id, file_id)
 
             update_id = updates[-1]['update_id']
-
 
 echo()
