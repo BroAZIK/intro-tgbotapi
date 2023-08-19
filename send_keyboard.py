@@ -1,7 +1,6 @@
 import requests
 from config import BASE_URL, TOKEN
 
-from nested_list import K1
 
 def send_keyboard(chat_id, text, keyboard):
     '''sending messages'''
@@ -17,8 +16,26 @@ def send_keyboard(chat_id, text, keyboard):
 
     return response.status_code
 
+
+K1 = [
+    [
+        {
+            "text": "Location",
+            "request_location": True
+        }, 
+        {
+            "text": "Contact",
+            "request_contact": True
+        }
+    ],
+    [
+        "ok"
+    ]
+]
+
 keyboard = {
     'keyboard': K1,
+    'resize_keyboard': True,
 }
 
 send_keyboard('1258594598', 'Hello', keyboard)
